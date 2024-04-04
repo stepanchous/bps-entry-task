@@ -1,0 +1,30 @@
+#ifndef BPS_FLAGS_H
+#define BPS_FLAGS_H
+
+#include <stdint.h>
+
+enum Flag {
+  COMMIT = 1 << 0,
+};
+
+struct FlagArgs {
+  uint32_t commit_limit;
+};
+
+struct ProgramParameters {
+  uint32_t flags;
+  struct FlagArgs args;
+};
+
+struct Config {
+  uint32_t err;
+  struct ProgramParameters program_parameters;
+};
+
+struct Config ParseArgs(int argc, char** argv);
+
+int CheckFlag(uint32_t flags, enum Flag flag);
+
+void PrintUsage(void);
+
+#endif  // !BPS_FLAGS_H
