@@ -1,6 +1,7 @@
 #ifndef BPS_FLAGS_H
 #define BPS_FLAGS_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 enum Flag {
@@ -23,7 +24,7 @@ struct Config {
 
 struct Config ParseArgs(int argc, char** argv);
 
-int CheckFlag(uint32_t flags, enum Flag flag);
+bool CheckFlag(uint32_t flags, enum Flag flag);
 
 void PrintUsage(void);
 

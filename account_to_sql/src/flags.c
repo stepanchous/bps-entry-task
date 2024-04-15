@@ -10,7 +10,7 @@ struct Config ParseArgs(int argc, char** argv) {
 
   int option;
 
-  while ((option = getopt(argc, argv, "c:")) != -1 && !config.err) {
+  while (!config.err && (option = getopt(argc, argv, "c:")) != -1) {
     switch (option) {
       case 'c': {
         config.program_parameters.flags |= COMMIT;
@@ -34,6 +34,6 @@ struct Config ParseArgs(int argc, char** argv) {
   return config;
 }
 
-int CheckFlag(uint32_t flags, enum Flag flag) { return flags & flag; }
+bool CheckFlag(uint32_t flags, enum Flag flag) { return flags & flag; }
 
 void PrintUsage(void) { printf("usage: acct2sql [-c <commit limit>]\n"); }
