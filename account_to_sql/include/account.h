@@ -8,11 +8,11 @@
 
 struct Account {
   char number[ACCOUNT_NUMBER_LENGTH + 1];
-  uint64_t balance;
+  int64_t balance;
   struct {
     bool has_value;
-    uint64_t ledger_balance;
-  };
+    int64_t ledger_balance;
+  } optional_ledger_balance;
   uint64_t update_date;
   uint32_t update_time;
 };

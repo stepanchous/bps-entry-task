@@ -2,10 +2,11 @@
 #define BPS_VALUE_VALIDATOR_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
-bool MatchNumber(const char* number);
-bool MatchBalance(const char* balance);
-bool MatchLedgerBalance(const char* ledger_balance);
-bool MatchUpdateTime(const char* update_time);
+bool IsNumeric(const char* s, uint32_t max_length);
+bool IsSignedNumeric(const char* s, uint32_t max_length);
+bool IsAlphaNumeric(const char* s, uint32_t max_length);
+bool IsDateTime(const char* s, uint32_t max_length);
 
 #endif  // !BPS_VALUE_VALIDATOR_H

@@ -1,22 +1,61 @@
 #include "value_validation.h"
 
-#define _XOPEN_SOURCE
+#include <ctype.h>
 #include <string.h>
 #include <time.h>
 
-static bool IsNumeric(const char* s);
-static bool IsSignedNumeric(const char* s);
+bool IsNumeric(const char* s, uint32_t max_length) {
+  uint32_t length = strlen(s);
 
-bool MatchNumber(const char* number) { return IsNumeric(number); }
+  if (length == 0 || length > max_length) {
+    return false;
+  }
 
-bool MatchBalance(const char* balance) { return IsSignedNumeric(balance); }
+  bool is_valid = true;
 
-bool MatchLedgerBalance(const char* ledger_balance) {
-  return IsSignedNumeric(ledger_balance);
+  for (const char* c = s; *c != '\0' && is_valid; ++c) {
+    is_valid = '0' <= *c && *c <= '9';
+  }
+
+  return is_valid;
 }
 
-bool MatchUpdateTime(const char* update_time) {
-  struct tm ti;
+bool IsSignedNumeric(const char* s, uint32_t max_length) {
+  uint32_t length = strlen(s);
+
+  if (length == 0 || length > max_length) {
+    return false;
+  }
+
+  bool is_valid = *s == 'C' || *s == 'D';
+
+  ++s;
+
+  return is_valid && IsNumeric(s, max_length - 1);
+}
+
+bool IsAlphaNumeric(const char* s, uint32_t max_length) {
+  uint32_t length = strlen(s);
+
+  if (length == 0 || length > max_length) {
+    return false;
+  }
+
+  bool is_valid = true;
+
+  for (const char* c = s; *c != '\0' && is_valid; ++c) {
+    is_valid = isalnum(*c);
+  }
+
+  return is_valid;
+}
+
+bool IsDateTime(const char* update_time, uint32_t max_length) {
+  if (strlen(update_time) > max_length) {
+    return false;
+  }
+
+  struct tm ti = {0};
 
   char* last_proccessed = strptime(update_time, "%Y-%m-%d %H:%M:%S", &ti);
 
@@ -32,29 +71,4 @@ bool MatchUpdateTime(const char* update_time) {
   }
 
   return is_valid;
-}
-
-static bool IsNumeric(const char* s) {
-  if (*s == '\0') {
-    return false;
-  }
-
-  bool is_valid = true;
-
-  for (const char* c = s; *c != '\0' && is_valid; ++c) {
-    is_valid = '0' <= *c && *c <= '9';
-  }
-
-  return is_valid;
-}
-static bool IsSignedNumeric(const char* s) {
-  if (*s == '\0') {
-    return false;
-  }
-
-  bool is_valid = *s == 'C' || *s == 'D';
-
-  ++s;
-
-  return is_valid && IsNumeric(s);
 }

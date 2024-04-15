@@ -2,8 +2,9 @@
 #define BPS_ACCOUNT_DESERIALIZATION_H
 
 #include "account.h"
-#include "account_message.h"
+#include "message.h"
 
-struct Account DeserializeAccount(const struct AccountMessage* message);
+int DeserializeAccount(const struct DataMessage* message,
+                       struct Account* account);
 
 #endif  // !BPS_ACCOUNT_DESERIALIZATION_H

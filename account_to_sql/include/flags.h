@@ -17,12 +17,8 @@ struct ProgramParameters {
   struct FlagArgs args;
 };
 
-struct Config {
-  uint32_t err;
-  struct ProgramParameters program_parameters;
-};
-
-struct Config ParseArgs(int argc, char** argv);
+int ParseArgs(int argc, char** argv,
+              struct ProgramParameters* program_parameters);
 
 bool CheckFlag(uint32_t flags, enum Flag flag);
 

@@ -1,20 +1,33 @@
-#include "account_message.h"
+#include "account.h"
+#include "account_deserialization.h"
 #include "flags.h"
-#include "read_message.h"
+#include "message.h"
 
 int main(int argc, char** argv) {
-  struct Config args = ParseArgs(argc, argv);
+  struct ProgramParameters params;
 
-  if (args.err) {
+  if (ParseArgs(argc, argv, &params) != 0) {
     PrintUsage();
     return -1;
   }
 
-  struct AccountMessages records = NewAccountMessages();
+  struct DataMessages data_messages = ReadDataMessages(stdin);
 
-  if (ReadAccountRecords(stdin, &records) != 0) {
+  if (data_messages.size == 0) {
     printf("Error reading input\n");
+    return -1;
   }
 
-  DeleteAccountMessages(&records);
+  for (uint32_t i = 0; i < data_messages.size; ++i) {
+    struct Account account;
+
+    int err = DeserializeAccount(&data_messages.data[i], &account);
+
+    if (err) {
+      printf("Deserialization Error\n");
+      return -1;
+    }
+  }
+
+  DeleteDataMessages(&data_messages);
 }
