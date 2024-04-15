@@ -1,36 +1,21 @@
-#include "value_validator.h"
+#include "value_validation.h"
 
 #define _XOPEN_SOURCE
 #include <string.h>
 #include <time.h>
 
-static bool MatchNumber(const char* number);
-static bool MatchBalance(const char* balance);
-static bool MatchLedgerBalance(const char* ledger_balance);
-static bool MatchUpdateTime(const char* update_time);
 static bool IsNumeric(const char* s);
 static bool IsSignedNumeric(const char* s);
 
-struct ValueValidator NewValueValidator(void) {
-  return (struct ValueValidator){
-      .number = MatchNumber,
-      .balance = MatchBalance,
-      .ledger_balance = MatchLedgerBalance,
-      .update_time = MatchUpdateTime,
-  };
-}
+bool MatchNumber(const char* number) { return IsNumeric(number); }
 
-static bool MatchNumber(const char* number) { return IsNumeric(number); }
+bool MatchBalance(const char* balance) { return IsSignedNumeric(balance); }
 
-static bool MatchBalance(const char* balance) {
-  return IsSignedNumeric(balance);
-}
-
-static bool MatchLedgerBalance(const char* ledger_balance) {
+bool MatchLedgerBalance(const char* ledger_balance) {
   return IsSignedNumeric(ledger_balance);
 }
 
-static bool MatchUpdateTime(const char* update_time) {
+bool MatchUpdateTime(const char* update_time) {
   struct tm ti;
 
   char* last_proccessed = strptime(update_time, "%Y-%m-%d %H:%M:%S", &ti);

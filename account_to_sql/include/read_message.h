@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-#include "account.h"
+#include "account_message.h"
 
-int ReadAccountRecords(FILE* input, struct AccountRecords* account_records);
+int ReadAccountRecords(FILE* input, struct AccountMessages* account_records);
 
 #endif  // !BPS_READ_MESSAGE_H
