@@ -43,8 +43,8 @@ START_TEST(DeserializeDateCurrent) {
 
   struct DateTime date_time = DeserializeDateTime(s);
 
-  ck_assert_int_eq(date_time.time, 11100);
-  ck_assert_int_eq(date_time.date, 1713214800);
+  ck_assert_int_eq(date_time.time, 30500);
+  ck_assert_int_eq(date_time.date, 20240416);
 }
 
 START_TEST(DeserializePast) {
@@ -53,7 +53,7 @@ START_TEST(DeserializePast) {
   struct DateTime date_time = DeserializeDateTime(s);
 
   ck_assert_int_eq(date_time.time, 0);
-  ck_assert_int_eq(date_time.date, 946674000);
+  ck_assert_int_eq(date_time.date, 20000101);
 }
 
 Suite* DeserializationSuite(void) {

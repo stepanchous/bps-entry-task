@@ -167,7 +167,7 @@ START_TEST(AccountDeserializationValidNoLedger) {
   struct Account expected = {
       .number = "0101",
       .balance = 1,
-      .update_date = 946674000,
+      .update_date = 20000101,
       .update_time = 0,
   };
 
@@ -196,7 +196,7 @@ START_TEST(AccountDeserializationValidWithLedger) {
               .has_value = true,
               .ledger_balance = -12312312,
           },
-      .update_date = 946674000,
+      .update_date = 20000101,
       .update_time = 0,
   };
 
