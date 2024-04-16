@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include "value_validation.h"
 
 static struct DataMessage ReadDataMessage(FILE* input);
 static int ReadFieldMessage(FILE* input, struct FieldMessage* field);
@@ -101,7 +102,8 @@ static int ReadFieldMessage(FILE* input, struct FieldMessage* field) {
 static int ReadTag(FILE* input, char* tag) {
   tag[TAG_LENGTH] = 0;
 
-  return fread(tag, sizeof(char), TAG_LENGTH, input) != TAG_LENGTH;
+  return fread(tag, sizeof(char), TAG_LENGTH, input) != TAG_LENGTH &&
+         IsAlphaNumeric(tag, TAG_LENGTH);
 }
 
 static int ReadLength(FILE* input, uint32_t* length) {
