@@ -5,5 +5,9 @@
 
 Suite* AccountsSuite(void);
 Suite* ValidationSuite(void);
+Suite* MessageSuite(void);
+Suite* DeserializationSuite(void);
+Suite* AccountDeserializationSuite(void);
+Suite* SqlSuite(void);
 
 #endif  // !BPS_TEST_H

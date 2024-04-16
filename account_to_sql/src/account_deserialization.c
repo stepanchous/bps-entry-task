@@ -68,5 +68,9 @@ int DeserializeAccount(const struct DataMessage* message,
     }
   }
 
+  if (!err) {
+    err = !has_number || !has_balance || !has_update_time;
+  }
+
   return err;
 }

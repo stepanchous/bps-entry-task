@@ -40,6 +40,7 @@ START_TEST(AccountsAppendOne) {
   ck_assert_uint_eq(accounts.size, 1);
   ck_assert_uint_eq(accounts.capacity_, 1);
 
+  free(expected);
   DeleteAccounts(&accounts);
 }
 END_TEST
@@ -75,6 +76,7 @@ START_TEST(AccountsAppendMultiple) {
   ck_assert_uint_eq(accounts.size, 3);
   ck_assert_uint_eq(accounts.capacity_, 4);
 
+  free(expected);
   DeleteAccounts(&accounts);
 }
 END_TEST

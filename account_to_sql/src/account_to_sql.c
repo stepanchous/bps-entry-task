@@ -13,7 +13,7 @@ void SqlInsertAccount(const struct Account* account, FILE* output) {
           ACCOUNT_BALANCE_COL, ACCOUNT_LEDGER_BALANCE_COL,
           ACCOUNT_UPDATE_DATE_COL, ACCOUNT_UPDATE_TIME_COL);
 
-  fprintf(output, "VALUES (%s, %ld, ", account->number, account->balance);
+  fprintf(output, "VALUES ('%s', %ld, ", account->number, account->balance);
 
   if (account->optional_ledger_balance.has_value) {
     fprintf(output, "%ld, ", account->optional_ledger_balance.ledger_balance);

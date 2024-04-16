@@ -7,14 +7,10 @@ int main(void) {
 
   suite_runner = srunner_create(AccountsSuite());
   srunner_add_suite(suite_runner, ValidationSuite());
-  // srunner_add_suite(suite_runner, s21_sub_suite());
-  // srunner_add_suite(suite_runner, s21_mult_number_suite());
-  // srunner_add_suite(suite_runner, s21_mult_matrix_suite());
-  // srunner_add_suite(suite_runner, s21_transpose_suite());
-  // srunner_add_suite(suite_runner, s21_determinant_suite());
-  // srunner_add_suite(suite_runner, s21_calc_components_suite());
-  // srunner_add_suite(suite_runner, s21_inverse_suite());
-  // srunner_add_suite(suite_runner, s21_create_suite());
+  srunner_add_suite(suite_runner, MessageSuite());
+  srunner_add_suite(suite_runner, DeserializationSuite());
+  srunner_add_suite(suite_runner, AccountDeserializationSuite());
+  srunner_add_suite(suite_runner, SqlSuite());
 
   srunner_run_all(suite_runner, CK_NORMAL);
 

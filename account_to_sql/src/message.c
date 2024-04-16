@@ -1,7 +1,11 @@
 #include "message.h"
 
 #include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "value_validation.h"
 
 static struct DataMessage ReadDataMessage(FILE* input);
@@ -11,17 +15,12 @@ static int ReadTag(FILE* input, char* tag);
 static int ReadLength(FILE* input, uint32_t* length);
 static int ReadValue(FILE* input, uint32_t length, char* value);
 
-static struct DataMessages NewDataMessages(void);
-static void MoveDataMessage(struct DataMessages* data_messages,
-                            const struct DataMessage* data_message);
-
 static struct DataMessage NewDataMessage(void);
 static struct DataMessage ReadDataMessage(FILE* input);
-static void DeleteDataMessage(struct DataMessage* data_message);
 
 static struct FieldMessage NewFieldMessage(void);
 static void MoveFieldMessage(struct DataMessage* data_message,
-                             const struct FieldMessage* field);
+                             struct FieldMessage* field);
 static void DeleteFieldMessage(struct FieldMessage* message);
 
 static char PeakChar(FILE* input);
@@ -67,6 +66,8 @@ static struct DataMessage ReadDataMessage(FILE* input) {
 
     if (!err) {
       MoveFieldMessage(&data_message, &field);
+    } else {
+      DeleteFieldMessage(&field);
     }
   }
 
@@ -94,7 +95,7 @@ static int ReadFieldMessage(FILE* input, struct FieldMessage* field) {
 
   if (!err) {
     field->value = malloc((field->length + 1) * sizeof(char));
-    ReadValue(input, field->length, field->value);
+    err = ReadValue(input, field->length, field->value);
   }
 
   return err;
@@ -103,8 +104,8 @@ static int ReadFieldMessage(FILE* input, struct FieldMessage* field) {
 static int ReadTag(FILE* input, char* tag) {
   tag[TAG_LENGTH] = 0;
 
-  return fread(tag, sizeof(char), TAG_LENGTH, input) != TAG_LENGTH &&
-         IsAlphaNumeric(tag, TAG_LENGTH);
+  return fread(tag, sizeof(char), TAG_LENGTH, input) != TAG_LENGTH ||
+         !IsAlphaNumeric(tag, TAG_LENGTH);
 }
 
 static int ReadLength(FILE* input, uint32_t* length) {
@@ -116,7 +117,7 @@ static int ReadLength(FILE* input, uint32_t* length) {
   err = fread(length_str, sizeof(char), LENGTH_LENGTH, input) != LENGTH_LENGTH;
 
   if (!err) {
-    err = IsNumeric(length_str, LENGTH_LENGTH);
+    err = !IsNumeric(length_str, LENGTH_LENGTH);
   }
 
   if (!err) {
@@ -131,7 +132,7 @@ static int ReadValue(FILE* input, uint32_t length, char* value) {
   return fread(value, sizeof(char), length, input) != length;
 }
 
-static struct DataMessages NewDataMessages(void) {
+struct DataMessages NewDataMessages(void) {
   return (struct DataMessages){
       .data = NULL,
       .size = 0,
@@ -139,8 +140,8 @@ static struct DataMessages NewDataMessages(void) {
   };
 }
 
-static void MoveDataMessage(struct DataMessages* data_messages,
-                            const struct DataMessage* data_message) {
+void MoveDataMessage(struct DataMessages* data_messages,
+                     struct DataMessage* data_message) {
   if (data_messages->size == data_messages->capacity_) {
     uint32_t new_capacity =
         data_messages->capacity_ == 0 ? 1 : 2 * data_messages->capacity_;
@@ -182,7 +183,7 @@ static struct DataMessage NewDataMessage(void) {
 }
 
 static void MoveFieldMessage(struct DataMessage* data_message,
-                             const struct FieldMessage* field) {
+                             struct FieldMessage* field) {
   if (data_message->size == data_message->capacity_) {
     uint32_t new_capacity =
         data_message->capacity_ == 0 ? 1 : 2 * data_message->capacity_;
@@ -197,7 +198,7 @@ static void MoveFieldMessage(struct DataMessage* data_message,
   ++data_message->size;
 }
 
-static void DeleteDataMessage(struct DataMessage* data_message) {
+void DeleteDataMessage(struct DataMessage* data_message) {
   for (uint32_t i = 0; i < data_message->size; ++i) {
     DeleteFieldMessage(&data_message->data[i]);
   }
@@ -220,4 +221,69 @@ static char PeakChar(FILE* input) {
   ungetc(c, input);
 
   return c;
+}
+
+struct FieldMessage FieldMessageBuilder(char* tag, uint32_t length,
+                                        char* value) {
+  struct FieldMessage field = NewFieldMessage();
+
+  strcpy(field.tag, tag);
+  field.length = length;
+
+  field.value = malloc((length + 1) * sizeof(char));
+  strcpy(field.value, value);
+
+  return field;
+}
+
+struct DataMessage DataMessageBuilder(uint32_t count, ...) {
+  struct DataMessage data_message = NewDataMessage();
+  va_list ap;
+
+  va_start(ap, count);
+
+  for (uint32_t i = 0; i < count; ++i) {
+    struct FieldMessage field = va_arg(ap, struct FieldMessage);
+    MoveFieldMessage(&data_message, &field);
+  }
+
+  va_end(ap);
+
+  return data_message;
+}
+
+bool IsEqualFieldMessage(const struct FieldMessage* lhs,
+                         const struct FieldMessage* rhs) {
+  return strcmp(lhs->tag, rhs->tag) == 0 &&
+         strcmp(lhs->value, rhs->value) == 0 && lhs->length == rhs->length;
+}
+
+bool IsEqualDataMessage(const struct DataMessage* lhs,
+                        const struct DataMessage* rhs) {
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+
+  for (uint32_t i = 0; i < lhs->size; ++i) {
+    if (!IsEqualFieldMessage(&lhs->data[i], &rhs->data[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool IsEqualDataMessages(const struct DataMessages* lhs,
+                         const struct DataMessages* rhs) {
+  if (lhs->size != rhs->size) {
+    return false;
+  }
+
+  for (uint32_t i = 0; i < lhs->size; ++i) {
+    if (!IsEqualDataMessage(&lhs->data[i], &rhs->data[i])) {
+      return false;
+    }
+  }
+
+  return true;
 }

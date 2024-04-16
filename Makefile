@@ -15,11 +15,18 @@ SRC := $(SRC_DIR)/account.c \
 			 $(SRC_DIR)/flags.c \
 			 $(SRC_DIR)/message.c \
 			 $(SRC_DIR)/value_validation.c
+
 MAIN := $(SRC_DIR)/main.c
 
 TEST_SRC := $(TEST_DIR)/test_account.c \
-						$(TEST_DIR)/test_validation.c
+						$(TEST_DIR)/test_validation.c \
+						$(TEST_DIR)/test_message.c \
+						$(TEST_DIR)/test_deserialization.c \
+						$(TEST_DIR)/test_account_deserialization.c \
+						$(TEST_DIR)/test_sql.c
+
 TEST_MAIN := $(TEST_DIR)/test.c
+
 TEST_LIB := -lcheck
 
 COVERAGE_FLAGS := --coverage -fprofile-abs-path
@@ -46,7 +53,7 @@ $(COVERAGE_TARGET): $(BUILD_DIR) $(SRC) $(TEST_SRC) $(TEST_MAIN)
 	$(CC) $(CFLAGS) $(DBGFLAGS) $(INCLUDE) $(SRC) $(TEST_MAIN) \
 		$(TEST_SRC) $(TEST_LIB) $(COVERAGE_FLAGS) -o $(BUILD_DIR)/test_coverage.out
 	./$(BUILD_DIR)/test_coverage.out
-	gcovr --exclude $(TEST_DIR)/ --html-details -o $(BUILD_DIR)/coverage.html
+	gcovr --exclude $(TEST_DIR)/ --exclude $(SRC_DIR)/flags.c --html-details -o $(BUILD_DIR)/coverage.html
 	xdg-open build/coverage.html
 
 $(BUILD_DIR):

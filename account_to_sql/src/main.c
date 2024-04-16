@@ -40,8 +40,7 @@ int main(int argc, char** argv) {
     SqlInsertAccount(&accounts.data[i], stdout);
 
     if (CheckFlag(params.flags, COMMIT) &&
-        (i + 1 >= params.args.commit_limit &&
-         i + 1 % params.args.commit_limit == 0)) {
+        (i + 1) % params.args.commit_limit == 0) {
       SqlCommit(stdout);
     }
   }
