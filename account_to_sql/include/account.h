@@ -17,6 +17,8 @@ struct Account {
   uint32_t update_time;
 };
 
+bool IsEqualAccount(const struct Account* lhs, const struct Account* rhs);
+
 struct Accounts {
   struct Account* data;
   uint32_t size;

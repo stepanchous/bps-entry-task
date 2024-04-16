@@ -2,3 +2,5 @@ compile_commands.json
 acct2sql
 .cache
 input.txt
+*.out
+build

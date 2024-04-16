@@ -59,7 +59,8 @@ bool IsDateTime(const char* update_time, uint32_t max_length) {
 
   char* last_proccessed = strptime(update_time, "%Y-%m-%d %H:%M:%S", &ti);
 
-  bool is_valid = strlen(update_time) == 19 && *last_proccessed == '\0';
+  bool is_valid = strlen(update_time) == 19 &&
+                  (last_proccessed != NULL && *last_proccessed == '\0');
 
   if (is_valid) {
     struct tm ti_copy = ti;

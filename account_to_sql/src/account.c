@@ -1,6 +1,18 @@
 #include "account.h"
 
 #include <stdlib.h>
+#include <string.h>
+
+bool IsEqualAccount(const struct Account* lhs, const struct Account* rhs) {
+  return strcmp(lhs->number, rhs->number) == 0 &&
+         lhs->balance == rhs->balance &&
+         lhs->optional_ledger_balance.has_value ==
+             rhs->optional_ledger_balance.has_value &&
+         lhs->optional_ledger_balance.ledger_balance ==
+             rhs->optional_ledger_balance.ledger_balance &&
+         lhs->update_date == rhs->update_date &&
+         lhs->update_time == rhs->update_time;
+}
 
 struct Accounts NewAccounts(void) {
   return (struct Accounts){
