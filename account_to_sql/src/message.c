@@ -60,7 +60,8 @@ static struct DataMessage ReadDataMessage(FILE* input) {
     err = 1;
   }
 
-  while (!err && !feof(input) && !isspace(PeakChar(input))) {
+  while (!err && !feof(input) &&
+         !(isspace(PeakChar(input)) || PeakChar(input) == EOF)) {
     struct FieldMessage field = NewFieldMessage();
     err = ReadFieldMessage(input, &field);
 
@@ -113,6 +114,10 @@ static int ReadLength(FILE* input, uint32_t* length) {
   length_str[LENGTH_LENGTH] = 0;
 
   err = fread(length_str, sizeof(char), LENGTH_LENGTH, input) != LENGTH_LENGTH;
+
+  if (!err) {
+    err = IsNumeric(length_str, LENGTH_LENGTH);
+  }
 
   if (!err) {
     err = sscanf(length_str, "%u", length) != 1;

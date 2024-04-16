@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -std=c11 -Wall -Wextra -pedantic
-DBGFLAGS := -g -O0 -D_XOPEN_SOURCE
+DBGFLAGS := -g -O0 -D_XOPEN_SOURCE -D_GNU_SOURCE
 
 PROJ := account_to_sql
 

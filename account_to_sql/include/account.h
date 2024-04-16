@@ -17,4 +17,14 @@ struct Account {
   uint32_t update_time;
 };
 
+struct Accounts {
+  struct Account* data;
+  uint32_t size;
+  uint32_t capacity_;
+};
+
+struct Accounts NewAccounts(void);
+void AppendAccount(struct Accounts* accounts, const struct Account* account);
+void DeleteAccounts(struct Accounts* accounts);
+
 #endif  // !BPS_ACCOUNT_H

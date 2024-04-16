@@ -3,6 +3,8 @@
 #include <getopt.h>
 #include <stdio.h>
 
+#include "value_validation.h"
+
 int ParseArgs(int argc, char** argv,
               struct ProgramParameters* program_parameters) {
   int err = 0;
@@ -19,7 +21,9 @@ int ParseArgs(int argc, char** argv,
       case 'c': {
         program_parameters->flags |= COMMIT;
 
-        if (sscanf(optarg, "%u", &program_parameters->args.commit_limit) != 1) {
+        if (!IsNumeric(optarg, 11) ||
+            sscanf(optarg, "%u", &program_parameters->args.commit_limit) != 1 ||
+            program_parameters->args.commit_limit == 0) {
           err = 1u;
 
           fprintf(stderr, "%s: argument error: '%s'\n", argv[0], optarg);
