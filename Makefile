@@ -1,6 +1,7 @@
 CC := gcc
 CFLAGS := -std=c11 -Wall -Wextra -pedantic -D_XOPEN_SOURCE -D_GNU_SOURCE
 DBGFLAGS := -g -O0
+RLSFLAGS := -O3
 
 PROJ := account_to_sql
 
@@ -32,6 +33,7 @@ TEST_LIB := -lcheck
 COVERAGE_FLAGS := --coverage -fprofile-abs-path
 
 TARGET := acct2sql
+DEBUG_TARGET := debug
 TEST_TARGET := test
 COVERAGE_TARGET := coverage
 
@@ -42,7 +44,10 @@ BUILD_DIR := build
 all: $(TARGET) $(TEST_TARGET)
 
 $(TARGET): $(BUILD_DIR) $(SRC) $(MAIN)
-	$(CC) $(CFLAGS) $(DBGFLAGS) $(INCLUDE) $(SRC) $(MAIN) -o $(BUILD_DIR)/$(TARGET)
+	$(CC) $(CFLAGS) $(RLSFLAGS) $(INCLUDE) $(SRC) $(MAIN) -o $(BUILD_DIR)/$(TARGET)
+
+$(DEBUG_TARGET): $(BUILD_DIR) $(SRC) $(MAIN) 
+	$(CC) $(CFLAGS) $(DBGFLAGS) $(INCLUDE) $(SRC) $(MAIN) -o $(BUILD_DIR)/$(TARGET)_$(DEBUG_TARGET)
 
 $(TEST_TARGET): $(BUILD_DIR) $(SRC) $(TEST_SRC) $(TEST_MAIN)
 	$(CC) $(CFLAGS) $(DBGFLAGS) $(INCLUDE) $(TEST_LIB) \
