@@ -146,8 +146,8 @@ void MoveDataMessage(struct DataMessages* data_messages,
     uint32_t new_capacity =
         data_messages->capacity_ == 0 ? 1 : 2 * data_messages->capacity_;
 
-    data_messages->data = realloc(data_messages->data,
-                                  new_capacity * sizeof(struct FieldMessage));
+    data_messages->data =
+        realloc(data_messages->data, new_capacity * sizeof(struct DataMessage));
     data_messages->capacity_ = new_capacity;
   }
 
